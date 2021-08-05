@@ -2,21 +2,18 @@ Vagrant.configure("2") do |config|
 
   config.vm.box = "ubuntu/bionic64"
   config.vm.provider "virtualbox" do |p|
-        p.name = "no-master"
+        p.name = "master-k8s"
         p.memory = 2048
         p.cpus = 2
   end
-  config.vm.hostname = "no-master"
-  config.vm.hostname = "no-master"
+  config.vm.hostname = "master-k8s"
   config.vm.network :forwarded_port, guest: 22, host: 3000, id: 'ssh'
   config.vm.network "public_network", ip: "192.168.0.50", bridge: "enp34s0"
 
 
   config.vm.provision "shell", inline: <<-SHELL
    apt-get update
-   apt-get install net-tools -y
-   apt-get install vim -y
-   apt-get install curl -y
+   apt-get install net-tools vim curl -y
    curl -fsSL https://get.docker.com/ | bash
    cat > /etc/docker/daemon.json <<EOF
   {
@@ -36,6 +33,13 @@ EOF
   apt-get update
   apt-get install -y kubelet kubeadm kubectl
   swapoff -a
+  kubeadm config images pull
+  kubeadm init
+  mkdir -p $HOME/.kube
+  cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  chown $(id -u):$(id -g) $HOME/.kube/config
+  modprobe br_netfilter ip_vs_rr ip_vs_wrr ip_vs_sh nf_conntrack_ipv4 ip_vs
+  kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
   SHELL
 
 end

@@ -1,18 +1,10 @@
 #ignore .vagrant .log
 
-ubuntu-server-no1/.vagrant/*
+master-k8s/.vagrant/*
+master-k8s/*.log
 
-ubuntu-server-no1/*.log
+worker1-k8s/.vagrant/*
+worker1-k8s/*.log
 
-ubuntu-server-no2/.vagrant/*
-
-ubuntu-server-no2/*.log
-
-ubuntu-server-no3/.vagrant/*
-
-ubuntu-server-no3/*.log
-
-ubuntu-no-master/.vagrant/*
-
-ubuntu-no-master/*.log
-
+worker2-k8s/.vagrant/*
+worker2-k8s/*.log

@@ -2,21 +2,18 @@ Vagrant.configure("2") do |config|
 
   config.vm.box = "ubuntu/bionic64"
   config.vm.provider "virtualbox" do |p|
-        p.name = "no-master"
+        p.name = "worker1-k8s"
         p.memory = 2048
         p.cpus = 2
   end
-  config.vm.hostname = "no-master"
-  config.vm.hostname = "no-master"
-  config.vm.network :forwarded_port, guest: 22, host: 3000, id: 'ssh'
-  config.vm.network "public_network", ip: "192.168.0.50", bridge: "enp34s0"
+  config.vm.hostname = "workwer1-k8s"
+  config.vm.network :forwarded_port, guest: 22, host: 3201, id: 'ssh'
+  config.vm.network "public_network", ip: "192.168.0.51", bridge: "enp34s0"
 
 
   config.vm.provision "shell", inline: <<-SHELL
    apt-get update
-   apt-get install net-tools -y
-   apt-get install vim -y
-   apt-get install curl -y
+   apt-get install net-tools vim curl -y
    curl -fsSL https://get.docker.com/ | bash
    cat > /etc/docker/daemon.json <<EOF
   {
@@ -37,5 +34,4 @@ EOF
   apt-get install -y kubelet kubeadm kubectl
   swapoff -a
   SHELL
-
 end
